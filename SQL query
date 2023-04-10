@@ -1,0 +1,212 @@
+/*
+Created by: Afifah Azman
+On: 9th April 2023
+Description: Identifying factors for customer to leave the bank.
+*/
+
+-------------------------------------------------------
+-- How many total customer Churn?
+-------------------------------------------------------
+
+SELECT
+	count(churn)
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+	
+-------------------------------------------------------
+-- Factors contribute to churn?
+-------------------------------------------------------
+
+CREATE VIEW Vfactors_Churn AS
+SELECT
+	*
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+	
+	
+-------------------------------------------------------
+-- Churn vs retention?
+-------------------------------------------------------
+
+CREATE VIEW Vtotal_retention AS
+SELECT
+	count(churn) AS 'Retention',
+	customer_id
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '0'
+	
+SELECT churn AS 'Churn vs Retention'
+	FROM Vtotal_churn
+UNION
+SELECT Retention FROM Vtotal_retention
+
+-------------------------------------------------------
+-- Churn against country?
+-------------------------------------------------------
+
+SELECT
+	count(churn) AS 'Total Churn',
+	country
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+GROUP by
+	country
+order by
+	count(churn)
+ 
+ -------------------------------------------------------
+-- Churn against gender?
+-------------------------------------------------------
+
+SELECT
+	count(churn) AS 'Total Churn',
+	gender
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+GROUP by
+	gender
+ 
+-------------------------------------------------------
+-- Gender with country against churn
+-------------------------------------------------------
+
+CREATE VIEW Vtotal_churn_f_country AS
+SELECT
+	count(churn),
+	gender,
+	country
+FROM	
+	Bank_Customer_Churn_Prediction
+WHERE
+	gender = 'Female' and churn = '1'
+group by
+	country
+	
+CREATE VIEW Vtotal_churn_m_country AS
+SELECT
+	count(churn),
+	gender,
+	country
+FROM	
+	Bank_Customer_Churn_Prediction
+WHERE
+	gender = 'Male' and churn = '1'
+group by
+	country
+	
+SELECT * FROM Vtotal_churn_f_country
+UNION
+SELECT * FROM Vtotal_churn_m_country ORDER by country
+
+
+-------------------------------------------------------
+-- Age with country against churn
+-------------------------------------------------------
+
+SELECT
+	age,
+	count(churn) AS 'Total Churn'
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+group by
+	age
+	
+
+-------------------------------------------------------
+-- Account balance against churn
+-------------------------------------------------------
+	
+SELECT
+	balance,
+	count(churn)
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+GROUP by
+	balance
+ORDER by
+	balance ASC
+	
+-------------------------------------------------------
+-- Balance 0 with age against churn
+-------------------------------------------------------
+
+SELECT
+	balance,
+	age,
+	count(churn)
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1' and balance = '0'
+GROUP by
+	age
+
+-------------------------------------------------------
+-- balance > 0 with age vs churn
+-------------------------------------------------------
+
+SELECT
+	age,
+	count(churn)
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1' and balance > '0'
+GROUP by
+	age
+	
+-------------------------------------------------------
+-- Active member against churn
+-------------------------------------------------------
+	
+SELECT
+	count(active_member) AS 'Total Active Member Churn'
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1' and active_member = '1'
+	
+
+--------------------------------------------------------------------
+-- Age, credit score, products number, credit card, balance vs churn
+--------------------------------------------------------------------
+
+SELECT	
+	age,
+	credit_score,
+	products_number,
+	credit_card,
+	balance,
+	churn
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE
+	churn = '1'
+	
+--------------------------------------------------------------------
+-- Products number against churn
+--------------------------------------------------------------------
+
+SELECT
+	products_number,
+	count(churn)
+FROM
+	Bank_Customer_Churn_Prediction
+WHERE 
+	churn = '1'
+GROUP by
+	products_number
