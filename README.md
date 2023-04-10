@@ -1,2 +1,2 @@
 # SQL-Bank-Customer-Churn
-Finding out the factor behind bank customer churn
+Finding out the factors behind bank customer churn
